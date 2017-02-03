@@ -3,7 +3,7 @@ GIT_MANAGE_FILE="${HOME}"/.git_manage
 
 function _git_manage_add_to_file()
 {
-    if ! grep "$1" "${GIT_MANAGE_FILE}" > /dev/null; then
+    if ! grep "^$1$" "${GIT_MANAGE_FILE}" > /dev/null; then
         echo "$1" >> "${GIT_MANAGE_FILE}"
     fi
 }
