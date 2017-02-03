@@ -15,8 +15,26 @@ function _git_manage_add()
     done
 }
 
+function _git_manage_add_interactive()
+{
+    if [ $# -eq 0 ]; then
+        IFS=$'\n' dirs=`find . -type d -depth 1 -maxdepth 1 | fzf --multi`
+    else
+        IFS=$'\n' dirs=`find "$@" -type d -depth 1 -maxdepth 1 | fzf --multi`
+    fi
+    _git_manage_add ${dirs}
+}
+
 if [ $# -eq 0 ]; then
     _git_manage_add `pwd`
 else
-    _git_manage_add "$@"
+    case "$1" in
+        "-i")
+            shift
+            _git_manage_add_interactive "$@"
+            ;;
+        *)
+            _git_manage_add "$@"
+            ;;
+    esac
 fi
