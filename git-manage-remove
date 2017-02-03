@@ -1,10 +1,27 @@
 #!/usr/bin/env bash
 GIT_MANAGE_FILE="${HOME}"/.git_manage
-repo_dir=$(pwd)
-if [ -d "${repo_dir}/.git" ]; then
-    if grep "${repo_dir}" "${GIT_MANAGE_FILE}" > /dev/null; then
-        sed -i -e "\|${repo_dir}|d" "${GIT_MANAGE_FILE}"
+
+function _git_manage_remove_from_file()
+{
+    if grep "^$1$" "${GIT_MANAGE_FILE}" > /dev/null; then
+        sed -i -e "\|^$1$|d" "${GIT_MANAGE_FILE}"
+    fi
+}
+
+if [ $# -eq 0 ]; then
+    repo_dir=$(pwd)
+    if [ -d "${repo_dir}/.git" ]; then
+        _git_manage_remove_from_file "${repo_dir}"
+    else
+        echo Not a git repository
     fi
 else
-    echo Not a git repository
+    for repo in "$@"; do
+        repo_dir=$(cd "${repo}" && pwd)
+        if [ -d "${repo_dir}"/.git ]; then
+            _git_manage_remove_from_file "${repo_dir}"
+        else
+            echo "${repo_dir}" is not a git repository
+        fi
+    done
 fi
