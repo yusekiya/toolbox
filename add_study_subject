@@ -1,0 +1,21 @@
+#!/bin/sh
+printf '%s' 'Enter subject name: '
+read subname
+subj_dir=$(printf '%s' $(pwd)/${subname} | sed -e "s@${HOME}@~@")
+while true; do
+    printf '%s' "${subj_dir} will be created. Are you sure? [y]/n: "
+    read answer
+    case ${answer} in
+        ""|"y"|"Y"|"yes"|"Yes"|"YES")
+            mkdir -p "${subname}"/Docs/{Notes,Paper,Reports}
+            mkdir -p "${subname}"/Projects
+            break
+            ;;
+        "n"|"N"|"no"|"No"|"NO")
+            break
+            ;;
+        *)
+            printf '%s\n' 'Answer with [y/n]'
+            ;;
+    esac
+done

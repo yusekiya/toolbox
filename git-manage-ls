@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+GIT_MANAGE_FILE="${HOME}"/.git_manage
+less ${GIT_MANAGE_FILE}

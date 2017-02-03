@@ -1,0 +1,20 @@
+#!/bin/sh
+printf '%s' 'Enter project name: '
+read projname
+proj_dir=$(printf '%s' $(pwd)/${projname} | sed -e "s@${HOME}@~@")
+while true; do
+    printf '%s' "${proj_dir} will be created. Are you sure? [y]/n: "
+    read answer
+    case ${answer} in
+        ""|"y"|"Y"|"yes"|"Yes"|"YES")
+            mkdir -p "$projname"/{src,data,img,notebook}
+            break
+            ;;
+        "n"|"N"|"no"|"No"|"NO")
+            break
+            ;;
+        *)
+            printf '%s\n' 'Answer with [y/n]'
+            ;;
+    esac
+done

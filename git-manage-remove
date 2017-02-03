@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+GIT_MANAGE_FILE="${HOME}"/.git_manage
+repo_dir=$(pwd)
+if [ -d "${repo_dir}/.git" ]; then
+    if grep "${repo_dir}" "${GIT_MANAGE_FILE}" > /dev/null; then
+        sed -i -e "\|${repo_dir}|d" "${GIT_MANAGE_FILE}"
+    fi
+else
+    echo Not a git repository
+fi
