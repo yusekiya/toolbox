@@ -15,8 +15,21 @@ function _git_manage_remove()
     done
 }
 
+function _git_manage_remove_interactive()
+{
+    IFS=$'\n' repos=`cat "${GIT_MANAGE_FILE}" | fzf --multi`
+    _git_manage_remove ${repos}
+}
+
 if [ $# -eq 0 ]; then
     _git_manage_remove `pwd`
 else
-    _git_manage_remove "$@"
+    case "$1" in
+        "-i")
+            _git_manage_remove_interactive
+            ;;
+        *)
+            _git_manage_remove "$@"
+            ;;
+    esac
 fi
