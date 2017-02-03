@@ -1,9 +1,20 @@
 #!/usr/bin/env bash
 case "$1" in
-    "add") exec git-manage-add ;;
-    "remove") exec git-manage-remove ;;
-    "ls") exec git-manage-ls ;;
-    "lookover") exec git-manage-lookover ;;
+    "add")
+        shift
+        exec git-manage-add "$@"
+        ;;
+    "remove")
+        shift
+        exec git-manage-remove "$@"
+        ;;
+    "ls")
+        exec git-manage-ls
+        ;;
+    "lookover")
+        exec git-manage-lookover
+        ;;
     *)
-        echo 'Usage: git manage [add|remove|ls|lookover]' ;;
+        echo 'Usage: git manage [add|remove|ls|lookover]'
+        ;;
 esac
