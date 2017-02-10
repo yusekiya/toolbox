@@ -19,7 +19,7 @@ while true; do
     case ${answer} in
         ""|"y"|"Y"|"yes"|"Yes"|"YES")
             printf '\n%s\n' 'Choose project type'
-            printf '%5s%s\n' '0' ': Jupyter + PostgreSQL'
+            printf '%5s%s\n' '0' ': Anaconda3 + Jupyter + PostgreSQL'
             printf '%5s%s\n' 'other' ': simple'
             printf '%s' 'which? '
             read proj_type
