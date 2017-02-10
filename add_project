@@ -1,13 +1,36 @@
 #!/bin/sh
+function project_jupyter_postgres()
+{
+    cp -r ~/repos/project_base_jupyter_postgres "./$projname"
+    rm -rf "./$projname/.git"
+}
+function project_simple()
+{
+    mkdir -p "$projname"/{src,notebook,img,data}
+}
+
 printf '%s' 'Enter project name: '
 read projname
 proj_dir=$(printf '%s' $(pwd)/${projname} | sed -e "s@${HOME}@~@")
 while true; do
-    printf '%s' "${proj_dir} will be created. Are you sure? [y]/n: "
+    printf '%s\n' "${proj_dir} will be created"
+    printf '%s' "Are you sure? [y]/n: "
     read answer
     case ${answer} in
         ""|"y"|"Y"|"yes"|"Yes"|"YES")
-            mkdir -p "$projname"/{src,data,img,notebook}
+            printf '\n%s\n' 'Choose project type'
+            printf '%5s%s\n' '0' ': Jupyter + PostgreSQL'
+            printf '%5s%s\n' 'other' ': simple'
+            printf '%s' 'which? '
+            read proj_type
+            case ${proj_type} in
+                "0")
+                    project_jupyter_postgres
+                    ;;
+                *)
+                    project_simple
+                    ;;
+            esac
             break
             ;;
         "n"|"N"|"no"|"No"|"NO")
