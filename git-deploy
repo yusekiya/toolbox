@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+show-usage() {
+    echo "Usage: git deploy [options] dest"
+    echo
+    echo "Deploy git tracking files using rsync over SSH"
+    echo "option:"
+    echo "  -h, --help      Show this message"
+    echo "  -n, --dry-run   Perform a trial run with no changes made"
+}
+
+deploy_repo() {
+    if [ -d "$(pwd)"/.git ]; then
+        if  [ -n "${FLG_DRY_RUN}" ] && [ "${FLG_DRY_RUN}" -eq 1 ]; then
+            git ls-files -z | rsync -e ssh --files-from - -av0n --exclude='.gitignore' . "${DEST}"
+        else
+            git ls-files -z | rsync -e ssh --files-from - -av0 --exclude='.gitignore' . "${DEST}"
+        fi
+    else
+        echo "Error: Run this command in a git root directory"
+    fi
+}
+
+for ARG in "$@"
+do
+    case "$ARG" in
+        '-h'|'--help' )
+            show-usage
+            exit 1
+            ;;
+        '-n'|'--dry-run' )
+            FLG_DRY_RUN=1
+            shift
+            ;;
+        -*)
+            echo "Invalid option $(echo $1 | sed 's/^-*//')"
+            show-usage
+            exit 1
+            ;;
+        *)
+            DEST="$ARG"
+            shift
+            ;;
+    esac
+done
+deploy_repo
