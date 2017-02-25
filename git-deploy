@@ -12,9 +12,9 @@ show-usage() {
 deploy_repo() {
     if [ -d "$(pwd)"/.git ]; then
         if  [ -n "${FLG_DRY_RUN}" ] && [ "${FLG_DRY_RUN}" -eq 1 ]; then
-            git ls-files -z | rsync -e ssh --files-from - -av0n --exclude='.gitignore' . "${DEST}"
+            git ls-files -z | rsync -e ssh --files-from - -avz0n --exclude='.gitignore' . "${DEST}"
         else
-            git ls-files -z | rsync -e ssh --files-from - -av0 --exclude='.gitignore' . "${DEST}"
+            git ls-files -z | rsync -e ssh --files-from - -avz0 --exclude='.gitignore' . "${DEST}"
         fi
     else
         echo "Error: Run this command in a git root directory"
