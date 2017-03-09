@@ -2,7 +2,7 @@
 GIT_MANAGE_FILE="${HOME}"/.git_manage
 while read line; do
     status="$(cd ${line}; git status --porcelain --branch)"
-    if [ -n "`echo "$status" | head -n 1 | grep '\[ahead'`" ]; then
+    if [ -n "`echo "$status" | head -n 1 | grep '\[\(behind\|ahead\)'`" ]; then
         echo -e "\e[33m${line}\e[m": `echo "${status}" | sed 's/##//g'`
     fi
     if [ "`echo "$status" | wc -l`" -gt 1 ]; then
