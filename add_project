@@ -1,4 +1,9 @@
 #!/bin/sh
+function project_jupyter()
+{
+    cp -r ~/repos/project_base_jupyter "./$projname"
+    rm -rf "./$projname/.git"
+}
 function project_jupyter_postgres()
 {
     cp -r ~/repos/project_base_jupyter_postgres "./$projname"
@@ -19,12 +24,16 @@ while true; do
     case ${answer} in
         ""|"y"|"Y"|"yes"|"Yes"|"YES")
             printf '\n%s\n' 'Choose project type'
-            printf '%5s%s\n' '0' ': Anaconda3 + Jupyter + PostgreSQL'
+            printf '%5s%s\n' '0' ': Anaconda3 + Jupyter'
+            printf '%5s%s\n' '1' ': Anaconda3 + Jupyter + PostgreSQL'
             printf '%5s%s\n' 'other' ': simple'
             printf '%s' 'which? '
             read proj_type
             case ${proj_type} in
                 "0")
+                    project_jupyter
+                    ;;
+                "1")
                     project_jupyter_postgres
                     ;;
                 *)
