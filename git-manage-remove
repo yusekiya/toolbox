@@ -21,10 +21,23 @@ function _git_manage_remove_interactive()
     _git_manage_remove ${repos}
 }
 
+function show_usage()
+{
+    printf '%s\n\t%b\n' "git manage remove [repo1 repo2..]"\
+        "Exclude specified repos from managed repos.\
+        \n\tIf no repos are specified, the current directory will be excluded."
+    printf '%s\n\t%b\n' "git manage remove -i"\
+        "Intaractively select repos with fzf to exclude from managed repos.\
+        \n\tSelect repos with tab key, then press enter to remove them"
+}
+
 if [ $# -eq 0 ]; then
     _git_manage_remove `pwd`
 else
     case "$1" in
+        "-h"|"--help")
+            show_usage
+            ;;
         "-i")
             _git_manage_remove_interactive
             ;;
