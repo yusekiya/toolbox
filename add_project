@@ -1,14 +1,43 @@
 #!/bin/sh
-function project_jupyter()
+REPOLOCAL="${HOME}/repos/deploy_research_env"
+REPOREMOTE="https://github.com/yusekiya/deploy_research_env.git"
+
+# Clone setup files if not exists
+if [ ! -d "$REPOLOCAL" ]; then
+    printf '%s' 'Cloning setup files...'
+    git clone $REPOREMOTE $REPOLOCAL > /dev/null 2>&1
+    printf '%s\n' ' done'
+fi
+
+function remove_git_history()
 {
-    cp -r ~/repos/project_base_jupyter "./$projname"
-    rm -rf "./$projname/.git"
+    rm -rf "./${projname}/.git"
 }
-function project_jupyter_postgres()
+
+function add_python_env()
 {
-    cp -r ~/repos/project_base_jupyter_postgres "./$projname"
-    rm -rf "./$projname/.git"
+    cp -r "${REPOLOCAL}/python" "./$projname"
+    remove_git_history
 }
+
+function add_python_db_env()
+{
+    cp -r "${REPOLOCAL}/python-database" "./$projname"
+    remove_git_history
+}
+
+function add_python_cpp_env()
+{
+    cp -r "${REPOLOCAL}/python-cpp" "./$projname"
+    remove_git_history
+}
+
+function add_python_cpp_db_env()
+{
+    cp -r "${REPOLOCAL}/python-cpp-database" "./$projname"
+    remove_git_history
+}
+
 function project_simple()
 {
     mkdir -p "$projname"/{src,notebook,img,data}
@@ -24,17 +53,25 @@ while true; do
     case ${answer} in
         ""|"y"|"Y"|"yes"|"Yes"|"YES")
             printf '\n%s\n' 'Choose project type'
-            printf '%5s%s\n' '0' ': Anaconda3 + Jupyter'
-            printf '%5s%s\n' '1' ': Anaconda3 + Jupyter + PostgreSQL'
-            printf '%5s%s\n' 'other' ': simple'
+            printf '%5s%s\n' '0' ': python'
+            printf '%5s%s\n' '1' ': python + PostgreSQL'
+            printf '%5s%s\n' '2' ': python + c/c++'
+            printf '%5s%s\n' '3' ': python + c/c++ + PostgreSQL'
+            printf '%5s%s\n' 'other' ': only create blank directories'
             printf '%s' 'which? '
             read proj_type
             case ${proj_type} in
                 "0")
-                    project_jupyter
+                    add_python_env
                     ;;
                 "1")
-                    project_jupyter_postgres
+                    add_python_db_env
+                    ;;
+                "2")
+                    add_python_cpp_env
+                    ;;
+                "3")
+                    add_python_cpp_db_env
                     ;;
                 *)
                     project_simple
