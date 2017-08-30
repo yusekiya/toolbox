@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+GIT_MANAGE_FILE="${HOME}"/.git_manage
+
+function _update_all_remote()
+{
+    while read line; do
+        gitup $line
+    done < ${GIT_MANAGE_FILE}
+}
+
+function show_usage()
+{
+    echo 'Usage: git manage pull'
+    echo ''
+    echo 'Update all managed repos'
+}
+
+if [ $# -eq 0 ]; then
+    _update_all_remote
+else
+    case "$1" in
+        "-h"|"--help"|"help")
+            show_usage
+            ;;
+        *)
+            echo "Invalid command '${1}'"
+            show_usage
+            exit 1
+            ;;
+    esac
+fi

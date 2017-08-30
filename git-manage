@@ -14,7 +14,11 @@ case "$1" in
     "lookover")
         exec git-manage-lookover
         ;;
+    "pull")
+        shift
+        exec git-manage-pull "$@"
+        ;;
     *)
-        echo 'Usage: git manage [add|remove|ls|lookover]'
+        echo 'Usage: git manage [add|remove|ls|lookover|pull]'
         ;;
 esac
