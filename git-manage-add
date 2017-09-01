@@ -15,6 +15,16 @@ function _git_manage_add()
     done
 }
 
+function show_usage()
+{
+    printf '%s\n\t%b\n' 'git manage add repo [repo ...]'\
+        'Add repos to managed repos.'
+    printf '%s\n\t%b\n' 'git manage add -i' \
+        "Interactively add repos under current directory.\
+        \n\tSelect repos with tab key, then press enter to add them"
+    
+}
+
 function _git_manage_add_interactive()
 {
     if [ $# -eq 0 ]; then
@@ -27,6 +37,9 @@ if [ $# -eq 0 ]; then
     _git_manage_add `pwd`
 else
     case "$1" in
+        "-h"|"--help")
+            show_usage
+            ;;
         "-i")
             shift
             _git_manage_add_interactive "$@"
