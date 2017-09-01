@@ -18,9 +18,7 @@ function _git_manage_add()
 function _git_manage_add_interactive()
 {
     if [ $# -eq 0 ]; then
-        IFS=$'\n' dirs=`find . -type d -depth 1 -maxdepth 1 | fzf --multi`
-    else
-        IFS=$'\n' dirs=`find "$@" -type d -depth 1 -maxdepth 1 | fzf --multi`
+        IFS=$'\n' dirs=`find . -maxdepth 1 -type d | fzf --multi`
     fi
     _git_manage_add ${dirs}
 }
