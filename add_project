@@ -14,27 +14,27 @@ function remove_git_history()
     rm -rf "./${projname}/.git"
 }
 
-function add_python_env()
+function add_jupyter_env()
 {
-    cp -r "${REPOLOCAL}/python" "./$projname"
+    cp -r "${REPOLOCAL}/jupyter" "./$projname"
     remove_git_history
 }
 
-function add_python_db_env()
+function add_jupyter_db_env()
 {
-    cp -r "${REPOLOCAL}/python-database" "./$projname"
+    cp -r "${REPOLOCAL}/jupyter-database" "./$projname"
     remove_git_history
 }
 
-function add_python_cpp_env()
+function add_jupyter_cpp_env()
 {
-    cp -r "${REPOLOCAL}/python-cpp" "./$projname"
+    cp -r "${REPOLOCAL}/jupyter-cpp" "./$projname"
     remove_git_history
 }
 
-function add_python_cpp_db_env()
+function add_jupyter_cpp_db_env()
 {
-    cp -r "${REPOLOCAL}/python-cpp-database" "./$projname"
+    cp -r "${REPOLOCAL}/jupyter-cpp-database" "./$projname"
     remove_git_history
 }
 
@@ -53,25 +53,25 @@ while true; do
     case ${answer} in
         ""|"y"|"Y"|"yes"|"Yes"|"YES")
             printf '\n%s\n' 'Choose project type'
-            printf '%5s%s\n' '0' ': python'
-            printf '%5s%s\n' '1' ': python + PostgreSQL'
-            printf '%5s%s\n' '2' ': python + c/c++'
-            printf '%5s%s\n' '3' ': python + c/c++ + PostgreSQL'
+            printf '%5s%s\n' '0' ': jupyter'
+            printf '%5s%s\n' '1' ': jupyter + PostgreSQL'
+            printf '%5s%s\n' '2' ': jupyter + c/c++'
+            printf '%5s%s\n' '3' ': jupyter + c/c++ + PostgreSQL'
             printf '%5s%s\n' 'other' ': only create blank directories'
             printf '%s' 'which? '
             read proj_type
             case ${proj_type} in
                 "0")
-                    add_python_env
+                    add_jupyter_env
                     ;;
                 "1")
-                    add_python_db_env
+                    add_jupyter_db_env
                     ;;
                 "2")
-                    add_python_cpp_env
+                    add_jupyter_cpp_env
                     ;;
                 "3")
-                    add_python_cpp_db_env
+                    add_jupyter_cpp_db_env
                     ;;
                 *)
                     project_simple
