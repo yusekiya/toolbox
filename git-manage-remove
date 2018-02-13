@@ -1,14 +1,21 @@
 #!/usr/bin/env bash
 GIT_MANAGE_FILE="${HOME}"/.git_manage
 
+function _exclude_repo_from_manage_file()
+{
+    if grep "^$1$" "${GIT_MANAGE_FILE}" > /dev/null; then
+        sed -i -e "\|^$1$|d" "${GIT_MANAGE_FILE}"
+    else
+        printf '%s' "$1 is not a managed repo"
+    fi
+}
+
 function _git_manage_remove()
 {
     for repo in "$@"; do
         repo_dir=$(cd "${repo}" && pwd)
         if [ -d "${repo_dir}"/.git ]; then
-            if grep "^${repo_dir}$" "${GIT_MANAGE_FILE}" > /dev/null; then
-                sed -i -e "\|^${repo_dir}$|d" "${GIT_MANAGE_FILE}"
-            fi
+            _exclude_repo_from_manage_file "${repo_dir}"
         else
             echo "${repo_dir}" is not a git repository
         fi
@@ -18,7 +25,9 @@ function _git_manage_remove()
 function _git_manage_remove_interactive()
 {
     IFS=$'\n' repos=`cat "${GIT_MANAGE_FILE}" | fzf --multi`
-    _git_manage_remove ${repos}
+    for repo in ${repos}; do
+        _exclude_repo_from_manage_file "${repo}"
+    done
 }
 
 function show_usage()
