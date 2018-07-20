@@ -1,14 +1,91 @@
 #! /usr/bin/env python3
 '''
-Docstring
+My note-taking utility
 '''
 
 import os
 import subprocess
+import shlex
+import datetime
 import argparse
+import toml
 
-HOME_DIR = os.path.expanduser('~')
-file_path = os.path.join(HOME_DIR, 'scratch', 'test.md')
+CONFIG_FILE = os.path.expanduser(os.path.join("~", ".note", "config.toml"))
+DEFAULT_CONFIG = {'note_dir': '~/my-note',
+                  'dir_format': '%Y/%m/',
+                  'file_name_format': '%d-%H%M%S.md',
+                  'editor': 'vim',
+                  'viewer': 'less'}
 
-out = subprocess.run(["vim", file_path])
-print(out)
+# Load configuration from the file,
+# otherwise create the config file and use default configuration
+if os.path.isfile(CONFIG_FILE):
+    config = toml.load(CONFIG_FILE)
+else:
+    if not os.path.isdir(os.path.dirname(CONFIG_FILE)):
+        os.makedirs(os.path.dirname(CONFIG_FILE))
+    with open(CONFIG_FILE, 'w') as fout:
+        toml.dump(DEFAULT_CONFIG, fout)
+    config = DEFAULT_CONFIG
+
+def add(args):
+    '''
+    Create a new note
+    '''
+    try:
+        keywords = input('Enter keywords separated by commas: ')
+    except KeyboardInterrupt:
+        return 0
+
+    now = datetime.datetime.now()
+    file_path = os.path.expanduser(
+        os.path.join(config['note_dir'],
+                     now.strftime(config['dir_format']),
+                     now.strftime(config['file_name_format'])
+        )
+    )
+    if not os.path.isdir(os.path.dirname(file_path)):
+        os.makedirs(os.path.dirname(file_path))
+    # Create a new file and open it with the specified editor
+    if not os.path.isfile(file_path):
+        with open(file_path, 'w') as fout:
+            fout.write('Keywords: ' + keywords)
+        subprocess.run(shlex.split(' '.join([config['editor'], file_path])))
+    print('{0} created'.format(file_path))
+
+def search(args):
+    note_dir = os.path.expanduser(config['note_dir'])
+    if args.keywords is not None:
+        search_words = args.keywords
+    else:
+        search_words = ''
+    file_search_command = 'ag --markdown --nonumber --nogroup "keywords:" {0}'.format(note_dir)
+    filter_command = 'fzf --height 30% --reverse' if not search_words else 'fzf --height 30% --reverse -q {0}'.format(search_words)
+    get_filename_command = 'perl -pe \'s/(.*?):.*/$1/g\''
+    
+    proc1 = subprocess.Popen(shlex.split(file_search_command), stdout=subprocess.PIPE)
+    proc2 = subprocess.Popen(shlex.split(filter_command), stdin=proc1.stdout, stdout=subprocess.PIPE)
+    proc3 = subprocess.Popen(shlex.split(get_filename_command), stdin=proc2.stdout, stdout=subprocess.PIPE, universal_newlines=True)
+    output, err = proc3.communicate()
+    file_path = output.rstrip()
+
+    if os.path.isfile(file_path):
+        subprocess.run(shlex.split(' '.join([config['viewer'], file_path])))
+    
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='My note-taking utility')
+    subparsers = parser.add_subparsers()
+
+    parser_add = subparsers.add_parser('add', help='Add new note')
+    parser_add.set_defaults(handler=add)
+
+    parser_search = subparsers.add_parser('search', help='Search note')
+    parser_search.add_argument("keywords", nargs='*', default=None)
+    parser_search.set_defaults(handler=search)
+
+    args = parser.parse_args()
+    if hasattr(args, 'handler'):
+        args.handler(args)
+    else:
+        parser.print_help()
