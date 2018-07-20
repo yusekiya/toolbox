@@ -53,25 +53,36 @@ def add(args):
         subprocess.run(shlex.split(' '.join([config['editor'], file_path])))
     print('{0} created'.format(file_path))
 
-def search(args):
+def _filter(keywords):
     note_dir = os.path.expanduser(config['note_dir'])
-    if args.keywords is not None:
-        search_words = args.keywords
-    else:
-        search_words = ''
     file_search_command = 'ag --markdown --nonumber --nogroup "keywords:" {0}'.format(note_dir)
-    filter_command = 'fzf --height 30% --reverse' if not search_words else 'fzf --height 30% --reverse -q {0}'.format(search_words)
+    filter_command = 'fzf --height 30% --reverse' if not keywords else 'fzf --height 30% --reverse -q {0}'.format(keywords)
     get_filename_command = 'perl -pe \'s/(.*?):.*/$1/g\''
     
     proc1 = subprocess.Popen(shlex.split(file_search_command), stdout=subprocess.PIPE)
     proc2 = subprocess.Popen(shlex.split(filter_command), stdin=proc1.stdout, stdout=subprocess.PIPE)
     proc3 = subprocess.Popen(shlex.split(get_filename_command), stdin=proc2.stdout, stdout=subprocess.PIPE, universal_newlines=True)
-    output, err = proc3.communicate()
+    output, _ = proc3.communicate()
     file_path = output.rstrip()
+    return file_path
 
+def search(args):
+    if args.keywords is not None:
+        keywords = args.keywords
+    else:
+        keywords = ''
+    file_path = _filter(keywords)
     if os.path.isfile(file_path):
         subprocess.run(shlex.split(' '.join([config['viewer'], file_path])))
-    
+
+def edit(args):
+    if args.keywords is not None:
+        keywords = args.keywords
+    else:
+        keywords = ''
+    file_path = _filter(keywords)
+    if os.path.isfile(file_path):
+        subprocess.run(shlex.split(' '.join([config['editor'], file_path])))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='My note-taking utility')
@@ -83,6 +94,10 @@ if __name__ == '__main__':
     parser_search = subparsers.add_parser('search', help='Search note')
     parser_search.add_argument("keywords", nargs='*', default=None)
     parser_search.set_defaults(handler=search)
+
+    parser_edit = subparsers.add_parser('edit', help='Edit note')
+    parser_edit.add_argument("keywords", nargs='*', default=None)
+    parser_edit.set_defaults(handler=edit)
 
     args = parser.parse_args()
     if hasattr(args, 'handler'):
