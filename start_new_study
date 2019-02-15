@@ -7,7 +7,7 @@ while true; do
     read answer
     case ${answer} in
         ""|"y"|"Y"|"yes"|"Yes"|"YES")
-            mkdir -p "${subname}"/Docs/{Notes,Paper,Reports}
+            mkdir -p "${subname}"/Docs/{Notes,Paper,References}
             mkdir -p "${subname}"/Projects
             break
             ;;
