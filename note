@@ -55,9 +55,11 @@ def add(args):
 def _filter(keywords):
     note_dir = os.path.expanduser(config['note_dir'])
     file_search_command = 'ag --markdown --nonumber --nogroup "keywords:" {0}'.format(note_dir)
-    filter_command = 'fzf --height 30% --reverse' if not keywords else 'fzf --height 30% --reverse -q "{0}"'.format(' '.join(keywords))
     get_filename_command = 'perl -pe \'s/(.*?):.*/$1/g\''
-    
+    if not keywords:
+        filter_command = 'fzf --height 100% --reverse --preview "head -n 20 `echo {{}} | {0}`"'.format(get_filename_command)
+    else:
+        filter_command = 'fzf --height 100% --reverse -q "{0}" --preview "head -n 20 `echo {{}} | {1}`"'.format(' '.join(keywords), get_filename_command)
     proc1 = subprocess.Popen(shlex.split(file_search_command), stdout=subprocess.PIPE)
     proc2 = subprocess.Popen(shlex.split(filter_command), stdin=proc1.stdout, stdout=subprocess.PIPE)
     proc3 = subprocess.Popen(shlex.split(get_filename_command), stdin=proc2.stdout, stdout=subprocess.PIPE, universal_newlines=True)
