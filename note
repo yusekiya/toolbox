@@ -14,8 +14,7 @@ CONFIG_FILE = os.path.expanduser(os.path.join("~", ".note", "config.toml"))
 DEFAULT_CONFIG = {'note_dir': '~/my-note',
                   'dir_format': '%Y/%m/',
                   'file_name_format': '%d-%H%M%S.md',
-                  'editor': 'vim',
-                  'viewer': 'less'}
+                  'editor': 'vim'}
 
 # Load configuration from the file,
 # otherwise create the config file and use default configuration
@@ -73,31 +72,26 @@ def search(args):
         keywords = ''
     file_path = _filter(keywords)
     if os.path.isfile(file_path):
-        subprocess.run(shlex.split(' '.join([config['viewer'], file_path])))
-
-def edit(args):
-    if args.keywords is not None:
-        keywords = args.keywords
-    else:
-        keywords = ''
-    file_path = _filter(keywords)
-    if os.path.isfile(file_path):
-        subprocess.run(shlex.split(' '.join([config['editor'], file_path])))
+        print(file_path)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='My note-taking utility')
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=('My note-taking utility\n\n'
+                     'Examples:\n'
+                     '  note add            - Create a new note\n'
+                     '  less `note search`  - Search a note, and view it with less command\n'
+                     '  vim `note search`   - Search a note, and open it with vim editor'
+                    )
+    )
     subparsers = parser.add_subparsers()
 
-    parser_add = subparsers.add_parser('add', help='Add new note')
+    parser_add = subparsers.add_parser('add', help='Add new note.')
     parser_add.set_defaults(handler=add)
 
-    parser_search = subparsers.add_parser('search', help='Search note')
+    parser_search = subparsers.add_parser('search', help='Search note, and print its path to stdout.')
     parser_search.add_argument("keywords", nargs='*', default=None)
     parser_search.set_defaults(handler=search)
-
-    parser_edit = subparsers.add_parser('edit', help='Edit note')
-    parser_edit.add_argument("keywords", nargs='*', default=None)
-    parser_edit.set_defaults(handler=edit)
 
     args = parser.parse_args()
     if hasattr(args, 'handler'):
