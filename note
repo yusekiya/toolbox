@@ -4,11 +4,16 @@ My note-taking utility
 '''
 
 import os
+import sys
 import subprocess
 import shlex
 import datetime
 import argparse
-import toml
+try:
+    import toml
+except ModuleNotFoundError:
+    print('You need toml package. Run `python3 -m pip install toml`.')
+    sys.exit(1)
 
 CONFIG_FILE = os.path.expanduser(os.path.join("~", ".note", "config.toml"))
 DEFAULT_CONFIG = {
