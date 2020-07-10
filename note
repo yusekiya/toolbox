@@ -70,7 +70,7 @@ def _filter(keywords):
     _file_search_command = 'ag --markdown --nonumber --nogroup "^keywords:" {note_dir}'.format(note_dir=note_dir)
     _format_line_command = "sed 's#^{note_dir}##g'".format(note_dir=note_dir)
     _get_filename_command = 'perl -pe \'s/(.*?):.*/$1/g\''
-    _filter_command = 'fzf --height 100% --reverse -q "{query}" --preview "head -n 40 `echo {note_dir}{{}} | {get_filename_command}`"'.format(query=' '.join(keywords), get_filename_command=_get_filename_command, note_dir=note_dir)
+    _filter_command = 'fzf --height 100% --reverse -q "{keywords}" --preview "head -n 40 `echo {note_dir}{{}} | {get_filename_command}`"'.format(keywords=' '.join(keywords), get_filename_command=_get_filename_command, note_dir=note_dir)
     proc_search = subprocess.Popen(shlex.split(_file_search_command), stdout=subprocess.PIPE)
     proc_format = subprocess.Popen(shlex.split(_format_line_command),
                                    stdin=proc_search.stdout, stdout=subprocess.PIPE)
