@@ -11,10 +11,11 @@ import argparse
 import toml
 
 CONFIG_FILE = os.path.expanduser(os.path.join("~", ".note", "config.toml"))
-DEFAULT_CONFIG = {'note_dir': '~/my-note',
-                  'dir_format': '%Y/%m/',
-                  'file_name_format': '%d-%H%M%S.md',
-                  'editor': 'vim'}
+DEFAULT_CONFIG = {
+    'note_dir': '~/my-note',
+    'dir_format': '%Y/%m/',
+    'file_name_format': '%d-%H%M%S.md',
+}
 
 # Load configuration from the file,
 # otherwise create the config file and use default configuration
@@ -26,6 +27,11 @@ else:
     with open(CONFIG_FILE, 'w') as fout:
         toml.dump(DEFAULT_CONFIG, fout)
     config = DEFAULT_CONFIG
+
+if 'EDITOR' in os.environ and os.environ['EDITOR']:
+    editor_command = os.environ['EDITOR']
+else:
+    raise RuntimeError('Environment variable "EDITOR" must be specified.')
 
 def add(args):
     '''
@@ -49,7 +55,7 @@ def add(args):
     if not os.path.isfile(file_path):
         with open(file_path, 'w') as fout:
             fout.write('Keywords: ' + keywords)
-        subprocess.run(shlex.split(' '.join([config['editor'], file_path])))
+        subprocess.run(shlex.split(' '.join([editor_command, file_path])))
     print('{0} created'.format(file_path))
 
 def _filter(keywords):
