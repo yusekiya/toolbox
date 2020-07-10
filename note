@@ -12,7 +12,7 @@ import argparse
 try:
     import toml
 except ModuleNotFoundError:
-    print('You need toml package. Run `python3 -m pip install toml`.')
+    print('You need the toml package. Run `python3 -m pip install toml`.')
     sys.exit(1)
 
 CONFIG_FILE = os.path.expanduser(os.path.join("~", ".note", "config.toml"))
@@ -43,7 +43,7 @@ def add(args):
     Create a new note
     '''
     try:
-        keywords = input('Enter keywords separated by commas: ')
+        keywords = input('Enter comma-separated list of keywords: ')
     except KeyboardInterrupt:
         return 0
 
@@ -93,16 +93,16 @@ if __name__ == '__main__':
         description=('My note-taking utility\n\n'
                      'Examples:\n'
                      '  note add            - Create a new note\n'
-                     '  less `note search`  - Search a note, and view it with less command\n'
-                     '  vim `note search`   - Search a note, and open it with vim editor'
+                     '  less `note search`  - Search for a note, and view it with less command\n'
+                     '  vim `note search`   - Search for a note, and open it with vim editor'
                     )
     )
     subparsers = parser.add_subparsers()
 
-    parser_add = subparsers.add_parser('add', help='Add new note.')
+    parser_add = subparsers.add_parser('add', help='Add a new note.')
     parser_add.set_defaults(handler=add)
 
-    parser_search = subparsers.add_parser('search', help='Search note, and print its path to stdout.')
+    parser_search = subparsers.add_parser('search', help='Search for a note, and print its path to stdout.')
     parser_search.add_argument("keywords", nargs='*', default=None)
     parser_search.set_defaults(handler=search)
 
