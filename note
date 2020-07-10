@@ -17,8 +17,8 @@ except ModuleNotFoundError:
 
 CONFIG_FILE = os.path.expanduser(os.path.join("~", ".note", "config.toml"))
 DEFAULT_CONFIG = {
-    'note_dir': '~/my-note',
-    'dir_format': '%Y/%m/',
+    'note_dir': '~{sep}my-note'.format(sep=os.sep),
+    'dir_format': '%Y{sep}%m{sep}'.format(sep=os.sep),
     'file_name_format': '%d-%H%M%S.md',
 }
 
@@ -65,19 +65,24 @@ def add(args):
 
 def _filter(keywords):
     note_dir = os.path.expanduser(config['note_dir'])
-    _file_search_command = 'ag --markdown --nonumber --nogroup "^keywords:" {0}'.format(note_dir)
+    if not note_dir.endswith(os.sep):
+        note_dir += os.sep
+    _file_search_command = 'ag --markdown --nonumber --nogroup "^keywords:" {note_dir}'.format(note_dir=note_dir)
+    _format_line_command = "sed 's#^{note_dir}##g'".format(note_dir=note_dir)
     _get_filename_command = 'perl -pe \'s/(.*?):.*/$1/g\''
-    _filter_command = 'fzf --height 100% --reverse -q "{0}" --preview "head -n 40 `echo {{}} | {1}`"'.format(' '.join(keywords), _get_filename_command)
+    _filter_command = 'fzf --height 100% --reverse -q "{query}" --preview "head -n 40 `echo {note_dir}{{}} | {get_filename_command}`"'.format(query=' '.join(keywords), get_filename_command=_get_filename_command, note_dir=note_dir)
     proc_search = subprocess.Popen(shlex.split(_file_search_command), stdout=subprocess.PIPE)
-    proc_filter = subprocess.Popen(shlex.split(_filter_command),
+    proc_format = subprocess.Popen(shlex.split(_format_line_command),
                                    stdin=proc_search.stdout, stdout=subprocess.PIPE)
+    proc_filter = subprocess.Popen(shlex.split(_filter_command),
+                                   stdin=proc_format.stdout, stdout=subprocess.PIPE)
     proc_getname = subprocess.Popen(shlex.split(_get_filename_command),
                                     stdin=proc_filter.stdout,
                                     stdout=subprocess.PIPE,
                                     universal_newlines=True)
     output, _ = proc_getname.communicate()
     file_path = output.rstrip()
-    return file_path
+    return note_dir + file_path
 
 def search(args):
     if args.keywords is not None:
