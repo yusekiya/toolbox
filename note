@@ -20,6 +20,11 @@ DEFAULT_CONFIG = {
     'note_dir': '~{sep}my-note'.format(sep=os.sep),
     'dir_format': '%Y{sep}%m{sep}'.format(sep=os.sep),
     'file_name_format': '%d-%H%M%S.md',
+    'file_search_command': 'ag --markdown --nonumber --nogroup "^keywords:" {note_dir}',
+    'format_line_command': "sed 's#^{note_dir}##g'",
+    'get_filename_command': 'perl -pe \'s/(.*?):.*/$1/g\'',
+    'filter_command': ('fzf --height 100% --reverse -q "{keywords}" '
+                       '--preview "head -n 40 `echo {note_dir}{{}} | {get_filename_command}`"'),
 }
 
 # Load configuration from the file,
@@ -67,10 +72,12 @@ def _filter(keywords):
     note_dir = os.path.expanduser(config['note_dir'])
     if not note_dir.endswith(os.sep):
         note_dir += os.sep
-    _file_search_command = 'ag --markdown --nonumber --nogroup "^keywords:" {note_dir}'.format(note_dir=note_dir)
-    _format_line_command = "sed 's#^{note_dir}##g'".format(note_dir=note_dir)
-    _get_filename_command = 'perl -pe \'s/(.*?):.*/$1/g\''
-    _filter_command = 'fzf --height 100% --reverse -q "{keywords}" --preview "head -n 40 `echo {note_dir}{{}} | {get_filename_command}`"'.format(keywords=' '.join(keywords), get_filename_command=_get_filename_command, note_dir=note_dir)
+    _file_search_command = config['file_search_command'].format(note_dir=note_dir)
+    _format_line_command = config['format_line_command'].format(note_dir=note_dir)
+    _get_filename_command = config['get_filename_command']
+    _filter_command = config['filter_command'].format(keywords=' '.join(keywords),
+                                                      get_filename_command=_get_filename_command,
+                                                      note_dir=note_dir)
     proc_search = subprocess.Popen(shlex.split(_file_search_command), stdout=subprocess.PIPE)
     proc_format = subprocess.Popen(shlex.split(_format_line_command),
                                    stdin=proc_search.stdout, stdout=subprocess.PIPE)
