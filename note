@@ -65,16 +65,17 @@ def add(args):
 
 def _filter(keywords):
     note_dir = os.path.expanduser(config['note_dir'])
-    file_search_command = 'ag --markdown --nonumber --nogroup "keywords:" {0}'.format(note_dir)
-    get_filename_command = 'perl -pe \'s/(.*?):.*/$1/g\''
-    if not keywords:
-        filter_command = 'fzf --height 100% --reverse --preview "head -n 40 `echo {{}} | {0}`"'.format(get_filename_command)
-    else:
-        filter_command = 'fzf --height 100% --reverse -q "{0}" --preview "head -n 40 `echo {{}} | {1}`"'.format(' '.join(keywords), get_filename_command)
-    proc1 = subprocess.Popen(shlex.split(file_search_command), stdout=subprocess.PIPE)
-    proc2 = subprocess.Popen(shlex.split(filter_command), stdin=proc1.stdout, stdout=subprocess.PIPE)
-    proc3 = subprocess.Popen(shlex.split(get_filename_command), stdin=proc2.stdout, stdout=subprocess.PIPE, universal_newlines=True)
-    output, _ = proc3.communicate()
+    _file_search_command = 'ag --markdown --nonumber --nogroup "keywords:" {0}'.format(note_dir)
+    _get_filename_command = 'perl -pe \'s/(.*?):.*/$1/g\''
+    _filter_command = 'fzf --height 100% --reverse -q "{0}" --preview "head -n 40 `echo {{}} | {1}`"'.format(' '.join(keywords), _get_filename_command)
+    proc_search = subprocess.Popen(shlex.split(_file_search_command), stdout=subprocess.PIPE)
+    proc_filter = subprocess.Popen(shlex.split(_filter_command),
+                                   stdin=proc_search.stdout, stdout=subprocess.PIPE)
+    proc_getname = subprocess.Popen(shlex.split(_get_filename_command),
+                                    stdin=proc_filter.stdout,
+                                    stdout=subprocess.PIPE,
+                                    universal_newlines=True)
+    output, _ = proc_getname.communicate()
     file_path = output.rstrip()
     return file_path
 
