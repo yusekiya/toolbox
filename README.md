@@ -78,7 +78,7 @@ The `note search` searches for notes and returns a relative file path using the 
 $ file_search_command | format_line_command | filter_command | get_filename_command
 ```
 
-You can modify the `*-command` variables so that the above pipeline works in you environment.
+You can modify the `*-command` variables so that the above pipeline works in your environment.
 
 
 [date_format]: https://docs.python.org/3/library/time.html#time.strftime
