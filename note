@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 '''
-My note-taking utility
+Minimal note-taking utility
 '''
 
 import os
@@ -103,7 +103,9 @@ def search(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description=('My note-taking utility\n\n'
+        description=('Minimal note-taking utility\n\n'
+            hlsearch
+            [<64;40;15M
                      'Examples:\n'
                      '  note add            - Create a new note\n'
                      '  less `note search`  - Search for a note, and view it with less command\n'
