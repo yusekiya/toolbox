@@ -1,6 +1,6 @@
 # Toolbox
 
-My toolbox for better terminal experience.
+My toolbox for better terminal usability.
 
 ## `note`
 
