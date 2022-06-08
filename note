@@ -112,10 +112,10 @@ if __name__ == '__main__':
     )
     subparsers = parser.add_subparsers()
 
-    parser_add = subparsers.add_parser('add', help='Add a new note.')
+    parser_add = subparsers.add_parser('add', aliases=['a'], help='Add a new note.')
     parser_add.set_defaults(handler=add)
 
-    parser_search = subparsers.add_parser('search', help='Search for a note, and print its path to stdout.')
+    parser_search = subparsers.add_parser('search', aliases=['s'], help='Search for a note, and print its path to stdout.')
     parser_search.add_argument("keywords", nargs='*', default=None)
     parser_search.set_defaults(handler=search)
 
