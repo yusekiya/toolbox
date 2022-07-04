@@ -56,19 +56,20 @@ Only two commands, `note add` and `note search`, are supported.
 
 ### Configuration
 
-The configuration file `config.toml` with default options is created in the `~/.note` directory
-when you run the command for the first time.
-Here is the list of variables.
+This program uses a `~/.note/config.toml` configuration file to customize settings for the program
+listed below.
 
-| variable               | description                                                                                                               |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `note_dir`             | Root directory under which notes are saved.                                                                               |
-| `dir_format`           | Name format of subdirectories in the `note_dir`. This is useful for storing notes in date-based directories. [Standard date time format][date_format] can be used.                   |
-| `file_name_format`     | Note file name format. The file must have `.md` filename extension. You can use [standard date time format][date_format]. |
-| `file_search_command`  | Command and options to make the list of notes.                                                                            |
-| `format_line_command`  | Command and options to format the list.                                                                                   |
-| `filter_command`       | Command and options to filter the list.                                                                                   |
-| `get_filename_command` | Command and options to extract the relative path.                                                                         |
+| variable               | description                                                                                                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `note_dir`             | Root directory under which notes are saved.                                                                                                                        |
+| `dir_format`           | Name format of subdirectories in the `note_dir`. This is useful for storing notes in date-based directories. [Standard date time format][date_format] can be used. |
+| `file_name_format`     | Note file name format. The file must have `.md` filename extension. You can use [standard date time format][date_format].                                          |
+| `file_search_command`  | Command and options to make the list of notes.                                                                                                                     |
+| `format_line_command`  | Command and options to format the list.                                                                                                                            |
+| `filter_command`       | Command and options to filter the list.                                                                                                                            |
+| `get_filename_command` | Command and options to extract the relative path.                                                                                                                  |
+
+Default values are defined by `DEFAULT_CONFIG` in the source code.
 
 The `note add` creates a new markdown file whose full path is formatted as `note_dir/dir_format/file_name_format`.
 

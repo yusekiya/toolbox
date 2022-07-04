@@ -32,10 +32,6 @@ DEFAULT_CONFIG = {
 if os.path.isfile(CONFIG_FILE):
     config = toml.load(CONFIG_FILE)
 else:
-    if not os.path.isdir(os.path.dirname(CONFIG_FILE)):
-        os.makedirs(os.path.dirname(CONFIG_FILE))
-    with open(CONFIG_FILE, 'w') as fout:
-        toml.dump(DEFAULT_CONFIG, fout)
     config = DEFAULT_CONFIG
 
 if 'EDITOR' in os.environ and os.environ['EDITOR']:
