@@ -10,14 +10,14 @@ Only two commands, `note add` and `note search`, are supported.
 ### Requirements for default configuration
 
 - `python3` to run this script.
-- [`toml`][toml] python package to load a configuration file.
+- [`tomlkit`][tomlkit] python package to load a configuration file.
 - [`ag`][ag], which makes a list of lines.
   Each line consists of a file path of a note and keywords for the note.
 - [`fzf`][fzf], which filters the list by keywords.
 - `sed`, which formats each line for good looking when you filter the list with the keywords.
 - `perl`, which extracts a relative file path from the root of the note directory.
 
-[toml]: https://github.com/uiri/toml
+[tomlkit]: https://github.com/sdispater/tomlkit
 [ag]: https://github.com/ggreer/the_silver_searcher
 [fzf]: https://github.com/junegunn/fzf
 
