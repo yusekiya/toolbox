@@ -9,13 +9,14 @@ import subprocess
 import shlex
 import datetime
 import argparse
+from pathlib import Path
 try:
-    import toml
+    from tomlkit import load
 except ModuleNotFoundError:
-    print('You need the toml package. Run `python3 -m pip install toml`.')
+    print('You need the tomlkit package. Run `python3 -m pip install tomlkit`.')
     sys.exit(1)
 
-CONFIG_FILE = os.path.expanduser(os.path.join("~", ".note", "config.toml"))
+CONFIG_FILE = Path.home() / ".note" / "config.toml"
 DEFAULT_CONFIG = {
     'note_dir': '~{sep}my-note'.format(sep=os.sep),
     'dir_format': '%Y{sep}%m{sep}'.format(sep=os.sep),
@@ -27,10 +28,10 @@ DEFAULT_CONFIG = {
                        '--preview "head -n 40 `echo {note_dir}{{}} | {get_filename_command}`"'),
 }
 
-# Load configuration from the file,
-# otherwise create the config file and use default configuration
-if os.path.isfile(CONFIG_FILE):
-    config = toml.load(CONFIG_FILE)
+# Load configuration from the file, otherwise use default configuration
+if CONFIG_FILE.is_file():
+    with open(CONFIG_FILE) as f:
+        config = load(f)
 else:
     config = DEFAULT_CONFIG
 
