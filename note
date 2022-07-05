@@ -29,11 +29,11 @@ DEFAULT_CONFIG = {
 }
 
 # Load configuration from the file, otherwise use default configuration
+config = DEFAULT_CONFIG
 if CONFIG_FILE.is_file():
     with open(CONFIG_FILE) as f:
-        config = load(f)
-else:
-    config = DEFAULT_CONFIG
+        user_config = load(f)
+    config.update(user_config)
 
 if 'EDITOR' in os.environ and os.environ['EDITOR']:
     editor_command = os.environ['EDITOR']
