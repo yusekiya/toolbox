@@ -31,7 +31,7 @@ DEFAULT_CONFIG = {
 # Load configuration from the file, otherwise use default configuration
 config = DEFAULT_CONFIG
 if CONFIG_FILE.is_file():
-    with open(CONFIG_FILE) as f:
+    with open(CONFIG_FILE, "rb") as f:
         user_config = load(f)
     config.update(user_config)
 
