@@ -11,10 +11,13 @@ import datetime
 import argparse
 from pathlib import Path
 try:
-    from tomlkit import load
+    from tomllib import load
 except ModuleNotFoundError:
-    print('You need the tomlkit package. Run `python3 -m pip install tomlkit`.')
-    sys.exit(1)
+    try:
+        from tomlkit import load
+    except ModuleNotFoundError:
+        print('You need the tomlkit package. Run `python3 -m pip install tomlkit`.')
+        sys.exit(1)
 
 CONFIG_FILE = Path.home() / ".note" / "config.toml"
 DEFAULT_CONFIG = {
